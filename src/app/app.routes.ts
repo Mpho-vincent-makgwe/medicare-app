@@ -23,14 +23,14 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  // declarations: [
-  //   // LoginComponent,
-  //   // RegisterComponent,
-  //   // ProductListComponent,
-  //   // ProductDetailComponent,
-  //   // AdminDashboardComponent,
-  //   // CartComponent
-  // ],
+  declarations: [
+    // LoginComponent,
+    // RegisterComponent,
+    // ProductListComponent,
+    // ProductDetailComponent,
+    // AdminDashboardComponent,
+    // CartComponent
+  ],
   imports: [
     // NavbarComponent,
     BrowserModule,
