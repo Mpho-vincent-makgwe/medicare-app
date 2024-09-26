@@ -1,5 +1,9 @@
 <div class="container">
-    <h2>Cart</h2>
-    <!-- Display cart summary and checkout -->
-  </div>
-  cd med
+  <h2>Cart</h2>
+  <ul *ngIf="cartItems.length > 0">
+    <li *ngFor="let item of cartItems">
+      {{ item.name }} - {{ item.price }} x {{ item.quantity }}
+    </li>
+  </ul>
+  <div *ngIf="cartItems.length === 0">Your cart is empty.</div>
+</div>

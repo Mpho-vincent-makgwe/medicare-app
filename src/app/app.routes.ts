@@ -1,13 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { BrowserModule } from '@angular/platform-browser';
+
+
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { CartComponent } from './components/cart/cart.component';
+// import { NavbarComponent } from './components/navbar/navbar.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -18,7 +23,22 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  // declarations: [
+  //   // LoginComponent,
+  //   // RegisterComponent,
+  //   // ProductListComponent,
+  //   // ProductDetailComponent,
+  //   // AdminDashboardComponent,
+  //   // CartComponent
+  // ],
+  imports: [
+    // NavbarComponent,
+    BrowserModule,
+    RouterModule.forRoot(routes),
+    // AppComponent  // Import the standalone component
+    
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppRoutingModule { }
+export class AppModule { }
