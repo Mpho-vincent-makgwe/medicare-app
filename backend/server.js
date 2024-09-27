@@ -34,7 +34,7 @@ app.post('/api/register', (req, res) => {
   const { fullName, email, username, password } = req.body;
 
   const checkUser = 'SELECT * FROM users WHERE email = ? OR username = ?';
-  
+
   // Using 'connection' instead of 'db'
   connection.query(checkUser, [email, username], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -82,32 +82,76 @@ app.post('/api/cart', (req, res) => {
   });
 });
 
-// Fetch cart items
-app.get('/api/cart/:userId', (req, res) => {
-  const { userId } = req.params;
-  const sql = `
-      SELECT c.id, p.name, p.price, c.quantity 
-      FROM cart c 
-      JOIN products p ON c.product_id = p.id 
-      WHERE c.user_id = ?
-  `;
+// Fetch all items from the cart table
+app.get('/api/cart', (req, res) => {
+  const query = `
+    SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
+           products.name, products.price
+    FROM cart
+    JOIN products ON cart.product_id = products.id`;
 
-  connection.query(sql, [userId], (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(200).json(results);
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      // No items in the cart
+      return res.status(200).json([]);
+    }
+
+    // Return all cart items
+    res.status(200).json(results);
   });
 });
+
+// Fetch a single cart item by ID (for detailed info)
+app.get('/api/cart/item/:id', (req, res) => {
+  const itemId = req.params.id;
+  const query = `
+    SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
+           products.name, products.price
+    FROM cart
+    JOIN products ON cart.product_id = products.id
+    WHERE cart.id = ?`;
+
+  db.query(query, [itemId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    // Return detailed information of the specific item
+    res.status(200).json(results[0]);
+  });
+});
+
 
 // Remove item from cart
-app.delete('/api/cart/:id', (req, res) => {
-  const { id } = req.params;
-  const sql = 'DELETE FROM cart WHERE id = ?';
+app.delete('/api/cart/item/:cartItemId', (req, res) => {
+  const cartItemId = req.params.cartItemId;
 
-  connection.query(sql, [id], (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(204).send();
+  // Query to delete the cart item by its ID
+  const query = 'DELETE FROM cart WHERE id = ?';
+
+  db.query(query, [cartItemId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.affectedRows === 0) {
+      // If no rows were affected, the item was not found
+      return res.status(404).json({ message: 'Cart item not found' });
+    }
+
+    // Success response after deletion
+    res.status(200).json({ message: 'Cart item deleted successfully' });
   });
 });
+
 
 
 // Start server

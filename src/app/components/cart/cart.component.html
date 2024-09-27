@@ -1,9 +1,22 @@
-<div class="container">
-  <h2>Cart</h2>
-  <ul *ngIf="cartItems.length > 0">
-    <li *ngFor="let item of cartItems">
-      {{ item.name }} - {{ item.price }} x {{ item.quantity }}
-    </li>
-  </ul>
-  <div *ngIf="cartItems.length === 0">Your cart is empty.</div>
+<!-- Only show loading spinner when the page is loading -->
+<div *ngIf="loading">
+  <p>Loading cart items...</p>
+</div>
+
+<!-- Only show error message if there is an error -->
+<div *ngIf="error">
+  <p>{{ error }}</p>
+</div>
+
+<!-- Show content only when data is loaded and there are cart items -->
+<div *ngIf="!loading && hasCartItems && !error">
+  <div *ngFor="let item of cartItems$ | async">
+    <p>{{ item.name }} - {{ item.price }} x {{ item.quantity }}</p>
+    <button (click)="deleteCartItem(item.cartItemId)">Remove</button>
+  </div>
+</div>
+
+<!-- Show a message if there are no items in the cart -->
+<div *ngIf="!loading && !hasCartItems && !error">
+  <p>Your cart is empty.</p>
 </div>

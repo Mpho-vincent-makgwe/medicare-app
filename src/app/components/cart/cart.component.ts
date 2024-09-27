@@ -1,39 +1,79 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cart',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrls: ['./cart.component.css']
 })
-export class CartComponent implements OnInit {
+export class CartComponent {
+  cartItems$: Observable<any[]> = of([]);   // Observable to store cart items
+  selectedItem: any = null;                 // Selected cart item for detailed view
+  loading: boolean = true;                  // Loading indicator
+  error: string | null = null;              // Error handling
+  hasCartItems: boolean = false;
 
-  cartItems: any[] = [];
-  userId: number = 1; // Get the logged-in user's ID appropriately
-
-  constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
+  constructor(private http: HttpClient) {
     this.getCartItems();
   }
 
-  getCartItems() {
-    this.http.get<any[]>(`/api/cart/${this.userId}`).subscribe(
-      (data) => {
-        this.cartItems = data;
-      },
-      (error) => {
-        console.error('Error fetching cart items', error);
-      }
-    );
+  // Fetch all cart items
+
+    getCartItems() {
+      this.loading = true;
+      this.error = null;
+
+      this.http.get<any[]>('/api/cart/1')  // You can change this to `/api/cart` for all items
+        .pipe(
+          catchError((error) => {
+            console.error('Error fetching cart items:', error);
+            this.error = 'Failed to load cart items';
+            this.loading = false;
+            return of([]); // Handle error by returning an empty observable
+          })
+        )
+        .subscribe((data) => {
+          if (data && data.length > 0) {
+            this.cartItems$ = of(data);
+            this.hasCartItems = true;
+          } else {
+            this.hasCartItems = false;
+          }
+          this.loading = false;
+        });
+    }
+
+  // Fetch details of a single cart item by ID
+  getCartItemDetails(cartItemId: number) {
+    this.loading = true;
+
+    this.http.get<any>(`/api/cart/item/${cartItemId}`)
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching cart item details:', error);
+          this.error = 'Failed to load item details';
+          this.loading = false;
+          return of(null);
+        })
+      )
+      .subscribe((data) => {
+        this.selectedItem = data;
+        this.loading = false;
+      });
+  }
+
+  // Function to delete a cart item
+  deleteCartItem(cartItemId: number) {
+    this.http.delete(`/api/cart/item/${cartItemId}`)
+      .subscribe(() => {
+        // Refresh cart items after deletion
+        this.getCartItems();
+        this.selectedItem = null;  // Clear the detailed view
+      }, (error) => {
+        console.error('Error deleting cart item:', error);
+        this.error = 'Failed to delete cart item';
+      });
   }
 }

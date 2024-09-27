@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login() {
     const credentials = {
@@ -36,5 +37,8 @@ export class LoginComponent {
         alert('Login failed. Please check your credentials and try again.');
       }
     });
+  }
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

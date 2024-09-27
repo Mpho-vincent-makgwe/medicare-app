@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +20,7 @@ export class RegisterComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,  private router: Router) {}
 
   register() {
     const user = {
@@ -41,5 +41,8 @@ export class RegisterComponent {
         alert('Registration failed. Please try again.');
       }
     });
+  }
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }
