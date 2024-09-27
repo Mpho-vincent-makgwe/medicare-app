@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductService {
   private apiUrl = 'http://localhost:3000/api/products';  // Backend URL
+  private apiUrlCart = 'http://localhost:3000/api/cart';  // Backend URL
 
   constructor(private http: HttpClient) {}
 
@@ -24,5 +25,8 @@ export class ProductService {
 
   removeProduct(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+  addToCart(productId: number, quantity: number): Observable<any> {
+    return this.http.post(this.apiUrlCart, { productId, quantity });
   }
 }

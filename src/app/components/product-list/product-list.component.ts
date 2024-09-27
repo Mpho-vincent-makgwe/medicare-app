@@ -21,4 +21,22 @@ export class ProductListComponent implements OnInit {
       this.products = data;
     });
   }
+
+// Method to handle adding product to the cart
+// Method to handle adding product to the cart with user-defined quantity
+addToCart(productId: number) {
+  const quantity = 1; // Default quantity; you can modify this logic as needed
+  this.productService.addToCart(productId, quantity).subscribe(
+    (response) => {
+      console.log('Product added to cart:', response);
+      alert('Product added to cart successfully!');
+    },
+    (error) => {
+      console.error('Error adding product to cart:', error);
+      alert('Failed to add product to cart');
+    }
+  );
+}
+
+
 }

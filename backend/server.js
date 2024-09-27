@@ -71,12 +71,25 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-// Add item to cart
-// Add item to cart
-app.post('/api/cart', (req, res) => {
-  const { userId, productId, quantity } = req.body;
 
-  // Fetch product details
+// Fetch all items from the cart table
+app.get('/api/cart', (req, res) => {
+  connection.query('SELECT * FROM cart', (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    // Ensure the results are sent as JSON
+    res.json(results); // Use res.json() to send a valid JSON response
+  });
+});
+
+
+
+// Add an item to the cart
+app.post('/api/cart', (req, res) => {
+  const { productId, quantity } = req.body;
+  const defaultUserId = 1; // Simulated or default user for educational purposes
+
   const fetchProductSql = 'SELECT * FROM products WHERE id = ?';
   connection.query(fetchProductSql, [productId], (err, productResults) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -84,61 +97,44 @@ app.post('/api/cart', (req, res) => {
 
     const product = productResults[0];
 
-    // Insert into cart with product details
-    const insertSql = `
-      INSERT INTO cart
-      (user_id, product_id, quantity, product_name, product_description, product_price, product_category, product_image_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      ON DUPLICATE KEY UPDATE quantity = quantity + ?`;
+    const checkCartSql = 'SELECT * FROM cart WHERE user_id = ? AND product_id = ?';
+    connection.query(checkCartSql, [defaultUserId, productId], (checkErr, checkResults) => {
+      if (checkErr) return res.status(500).json({ error: checkErr.message });
 
-    connection.query(insertSql, [
-      userId,
-      productId,
-      quantity,
-      product.name,
-      product.description,
-      product.price,
-      product.category,
-      product.image_url,
-      quantity
-    ], (insertErr, insertResult) => {
-      if (insertErr) return res.status(500).json({ error: insertErr.message });
-      res.status(201).json({ message: 'Item added to cart' });
-    });
-  });
-});
+      if (checkResults.length > 0) {
+        // Update quantity if item already exists in cart
+        const existingItem = checkResults[0];
+        const updateSql = `
+          UPDATE cart
+          SET quantity = quantity + ?
+          WHERE id = ?`;
 
-// Fetch all items from the cart table
-app.get('/api/cart', (req, res) => {
-  connection.query('SELECT * FROM cart', (error, results) => {
-      if (error) {
-          return res.status(500).json({ error: 'Internal Server Error' });
+        connection.query(updateSql, [quantity, existingItem.id], (updateErr) => {
+          if (updateErr) return res.status(500).json({ error: updateErr.message });
+          return res.status(200).json({ message: 'Item quantity updated in cart' });
+        });
+      } else {
+        // Insert new item into cart
+        const insertSql = `
+          INSERT INTO cart
+          (user_id, product_id, quantity, product_name, product_description, product_price, product_category, product_image_url)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        connection.query(insertSql, [
+          defaultUserId,
+          productId,
+          quantity,
+          product.name,
+          product.description,
+          product.price,
+          product.category,
+          product.image_url
+        ], (insertErr) => {
+          if (insertErr) return res.status(500).json({ error: insertErr.message });
+          res.status(201).json({ message: 'Item added to cart for default user' });
+        });
       }
-      res.send(results);
-  });
-});
-
-// Fetch a single cart item by ID (for detailed info)
-app.get('/api/cart/item/:id', (req, res) => {
-  const itemId = req.params.id;
-  const query = `
-    SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
-           products.name, products.price
-    FROM cart
-    JOIN products ON cart.product_id = products.id
-    WHERE cart.id = ?`;
-
-  db.query(query, [itemId], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'Item not found' });
-    }
-
-    // Return detailed information of the specific item
-    res.status(200).json(results[0]);
+    });
   });
 });
 
@@ -147,24 +143,44 @@ app.get('/api/cart/item/:id', (req, res) => {
 app.delete('/api/cart/item/:cartItemId', (req, res) => {
   const cartItemId = req.params.cartItemId;
 
-  // Query to delete the cart item by its ID
   const query = 'DELETE FROM cart WHERE id = ?';
-
-  db.query(query, [cartItemId], (err, result) => {
+  connection.query(query, [cartItemId], (err, result) => {
     if (err) {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
 
     if (result.affectedRows === 0) {
-      // If no rows were affected, the item was not found
       return res.status(404).json({ message: 'Cart item not found' });
     }
 
-    // Success response after deletion
     res.status(200).json({ message: 'Cart item deleted successfully' });
   });
 });
 
+
+// Fetch a single cart item by ID (for detailed info)
+// app.get('/api/cart/item/:id', (req, res) => {
+//   const itemId = req.params.id;
+//   const query = `
+//     SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
+//            products.name, products.price
+//     FROM cart
+//     JOIN products ON cart.product_id = products.id
+//     WHERE cart.id = ?`;
+
+//   db.query(query, [itemId], (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+
+//     if (results.length === 0) {
+//       return res.status(404).json({ error: 'Item not found' });
+//     }
+
+//     // Return detailed information of the specific item
+//     res.status(200).json(results[0]);
+//   });
+// });
 
 
 // Start server

@@ -1,4 +1,4 @@
-<!-- Only show loading spinner when the page is loading -->
+<!-- Only show loading spinner when the cart is loading -->
 <div *ngIf="loading">
   <p>Loading cart items...</p>
 </div>
@@ -10,10 +10,18 @@
 
 <!-- Show content only when data is loaded and there are cart items -->
 <div *ngIf="!loading && hasCartItems && !error">
-  <div *ngFor="let item of (cartItems$ | async)">
-    <p>{{ item.product_id }} - {{ item.quantity }}</p> <!-- Replace with the actual fields -->
-    <button (click)="deleteCartItem(item.id)">Remove</button> <!-- Use the correct identifier -->
-  </div>
+  <h3>Your Cart</h3>
+
+  <!-- Add product quantity input -->
+<div *ngFor="let item of (cartItems$ | async)">
+  <p>Product ID: {{ item.product_id }}</p>
+  <input type="number" [(ngModel)]="item.quantity" min="1" />
+  <button (click)="updateCartItem(item.product_id, item.quantity)">Update Quantity</button>
+  <button (click)="deleteCartItem(item.id)">Remove</button>
+</div>
+
+
+
 </div>
 
 <!-- Show a message if there are no items in the cart -->

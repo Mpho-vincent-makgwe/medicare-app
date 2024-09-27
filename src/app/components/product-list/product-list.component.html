@@ -7,7 +7,7 @@
       <p>Price: ${{ product.price }}</p>
       <p>Category: {{ product.category }}</p>
       <img [src]="product.image_url" [alt]="product.name" />
-      <button>Add to Cart</button>
+      <button (click)="addToCart(product.id)">Add to Cart</button>
     </div>
   </div>
 </div>
