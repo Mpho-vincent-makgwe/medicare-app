@@ -10,6 +10,7 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { CartComponent } from './components/cart/cart.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 // import { NavbarComponent } from './components/navbar/navbar.component';
 
 export const routes: Routes = [
@@ -19,7 +20,8 @@ export const routes: Routes = [
   { path: 'products', component: ProductListComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'admin', component: AdminDashboardComponent },
-  { path: 'cart', component: CartComponent }
+  { path: 'cart', component: CartComponent },
+  { path: 'checkout', component: CheckoutComponent },
 ];
 
 @NgModule({
@@ -36,9 +38,9 @@ export const routes: Routes = [
     BrowserModule,
     RouterModule.forRoot(routes),
     // AppComponent  // Import the standalone component
-    
+
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: []
 })
 export class AppModule { }

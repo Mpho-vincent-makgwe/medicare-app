@@ -1,30 +1,35 @@
-<!-- Only show loading spinner when the cart is loading -->
-<div *ngIf="loading">
-  <p>Loading cart items...</p>
-</div>
+<div class="video-background">
+  <video autoplay muted loop id="bg-video">
+      <source src="your-video-source.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+  </video>
 
-<!-- Only show error message if there is an error -->
-<div *ngIf="error">
-  <p>{{ error }}</p>
-</div>
+  <div class="container">
+      <h2>Checkout</h2>
 
-<!-- Show content only when data is loaded and there are cart items -->
-<div *ngIf="!loading && hasCartItems && !error">
-  <h3>Your Cart</h3>
+      <!-- Loading and Error Handling -->
+      <div *ngIf="loading">
+        <p>Loading cart items...</p>
+      </div>
+      <div *ngIf="error">
+        <p>{{ error }}</p>
+      </div>
 
-  <!-- Add product quantity input -->
-<div *ngFor="let item of (cartItems$ | async)">
-  <p>Product ID: {{ item.product_id }}</p>
-  <input type="number" [(ngModel)]="item.quantity" min="1" />
-  <button (click)="updateCartItem(item.product_id, item.quantity)">Update Quantity</button>
-  <button (click)="deleteCartItem(item.id)">Remove</button>
-</div>
+      <!-- Cart Items -->
+      <div *ngIf="!loading && hasCartItems && !error">
+        <h3>Your Cart</h3>
+        <div class="cart-item" *ngFor="let item of (cartItems$ | async)">
+          <p>{{ item.name }}</p>
+          <p>Price: ${{ item.price }}</p>
+          <input type="number" [(ngModel)]="item.quantity" min="1" class="quantity-input" />
+          <button (click)="updateCartItem(item.product_id, item.quantity)" class="update-btn">Update</button>
+          <button (click)="deleteCartItem(item.id)" class="remove-btn">Remove</button>
+        </div>
+        <button (click)="goToCheckout()" class="checkout-btn">Proceed to Checkout</button>
+      </div>
 
-
-
-</div>
-
-<!-- Show a message if there are no items in the cart -->
-<div *ngIf="!loading && !hasCartItems && !error">
-  <p>Your cart is empty.</p>
-</div>
+      <div *ngIf="!loading && !hasCartItems && !error">
+        <p>Your cart is empty.</p>
+      </div>
+    </div>
+  </div>

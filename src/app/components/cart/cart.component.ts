@@ -4,6 +4,8 @@ import { catchError } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart-service.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-cart',
@@ -22,12 +24,14 @@ export class CartComponent implements OnInit {
   error: string | null = null;
   hasCartItems: boolean = false;
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService, private router: Router) {}
 
   ngOnInit(): void {
     this.getCartItems();
   }
-
+  goToCheckout() {
+    this.router.navigate(['/checkout']); // Adjust the path as needed
+  }
   getCartItems() {
     this.loading = true;
     this.error = null;
