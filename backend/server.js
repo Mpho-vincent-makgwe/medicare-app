@@ -72,36 +72,49 @@ app.post('/api/login', (req, res) => {
 });
 
 // Add item to cart
+// Add item to cart
 app.post('/api/cart', (req, res) => {
   const { userId, productId, quantity } = req.body;
-  const sql = 'INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?';
 
-  connection.query(sql, [userId, productId, quantity, quantity], (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
+  // Fetch product details
+  const fetchProductSql = 'SELECT * FROM products WHERE id = ?';
+  connection.query(fetchProductSql, [productId], (err, productResults) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (productResults.length === 0) return res.status(404).json({ error: 'Product not found' });
+
+    const product = productResults[0];
+
+    // Insert into cart with product details
+    const insertSql = `
+      INSERT INTO cart
+      (user_id, product_id, quantity, product_name, product_description, product_price, product_category, product_image_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE quantity = quantity + ?`;
+
+    connection.query(insertSql, [
+      userId,
+      productId,
+      quantity,
+      product.name,
+      product.description,
+      product.price,
+      product.category,
+      product.image_url,
+      quantity
+    ], (insertErr, insertResult) => {
+      if (insertErr) return res.status(500).json({ error: insertErr.message });
       res.status(201).json({ message: 'Item added to cart' });
+    });
   });
 });
 
 // Fetch all items from the cart table
 app.get('/api/cart', (req, res) => {
-  const query = `
-    SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
-           products.name, products.price
-    FROM cart
-    JOIN products ON cart.product_id = products.id`;
-
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-
-    if (results.length === 0) {
-      // No items in the cart
-      return res.status(200).json([]);
-    }
-
-    // Return all cart items
-    res.status(200).json(results);
+  connection.query('SELECT * FROM cart', (error, results) => {
+      if (error) {
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      res.send(results);
   });
 });
 

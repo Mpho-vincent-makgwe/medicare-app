@@ -10,9 +10,9 @@
 
 <!-- Show content only when data is loaded and there are cart items -->
 <div *ngIf="!loading && hasCartItems && !error">
-  <div *ngFor="let item of cartItems$ | async">
-    <p>{{ item.name }} - {{ item.price }} x {{ item.quantity }}</p>
-    <button (click)="deleteCartItem(item.cartItemId)">Remove</button>
+  <div *ngFor="let item of (cartItems$ | async)">
+    <p>{{ item.product_id }} - {{ item.quantity }}</p> <!-- Replace with the actual fields -->
+    <button (click)="deleteCartItem(item.id)">Remove</button> <!-- Use the correct identifier -->
   </div>
 </div>
 

@@ -10,7 +10,6 @@ import { catchError } from 'rxjs/operators';
 })
 export class CartComponent {
   cartItems$: Observable<any[]> = of([]);   // Observable to store cart items
-  selectedItem: any = null;                 // Selected cart item for detailed view
   loading: boolean = true;                  // Loading indicator
   error: string | null = null;              // Error handling
   hasCartItems: boolean = false;
@@ -20,47 +19,23 @@ export class CartComponent {
   }
 
   // Fetch all cart items
-
-    getCartItems() {
-      this.loading = true;
-      this.error = null;
-
-      this.http.get<any[]>('/api/cart/1')  // You can change this to `/api/cart` for all items
-        .pipe(
-          catchError((error) => {
-            console.error('Error fetching cart items:', error);
-            this.error = 'Failed to load cart items';
-            this.loading = false;
-            return of([]); // Handle error by returning an empty observable
-          })
-        )
-        .subscribe((data) => {
-          if (data && data.length > 0) {
-            this.cartItems$ = of(data);
-            this.hasCartItems = true;
-          } else {
-            this.hasCartItems = false;
-          }
-          this.loading = false;
-        });
-    }
-
-  // Fetch details of a single cart item by ID
-  getCartItemDetails(cartItemId: number) {
+  getCartItems() {
     this.loading = true;
+    this.error = null;
 
-    this.http.get<any>(`/api/cart/item/${cartItemId}`)
+    this.http.get<any[]>('/api/cart')  // API endpoint to get cart items
       .pipe(
         catchError((error) => {
-          console.error('Error fetching cart item details:', error);
-          this.error = 'Failed to load item details';
+          console.error('Error fetching cart items:', error);
+          this.error = 'Failed to load cart items';
           this.loading = false;
-          return of(null);
+          return of([]); // Handle error by returning an empty observable
         })
       )
       .subscribe((data) => {
-        this.selectedItem = data;
-        this.loading = false;
+        this.cartItems$ = of(data); // Store fetched cart items
+        this.hasCartItems = data.length > 0; // Determine if there are cart items
+        this.loading = false; // Loading is complete
       });
   }
 
@@ -70,7 +45,6 @@ export class CartComponent {
       .subscribe(() => {
         // Refresh cart items after deletion
         this.getCartItems();
-        this.selectedItem = null;  // Clear the detailed view
       }, (error) => {
         console.error('Error deleting cart item:', error);
         this.error = 'Failed to delete cart item';
