@@ -1,6 +1,6 @@
 <div class="video-background">
   <video autoplay muted loop id="bg-video">
-      <source src="your-video-source.mp4" type="video/mp4">
+      <source src="https://videos.pexels.com/video-files/5355792/5355792-sd_640_360_25fps.mp4" type="video/mp4">
       Your browser does not support the video tag.
   </video>
 
@@ -19,7 +19,7 @@
         <div class="cart-item" *ngFor="let item of (cartItems$ | async)">
           <p>Product: {{ item.product_name }}</p>
           <p>Price: ${{ item.product_price }}</p>
-          <p>Subtotal: ${{ item.price * item.quantity }}</p>
+          <p>Subtotal: ${{ item.product_price * item.quantity }}</p>
           <input type="number" [(ngModel)]="item.quantity" min="1" class="quantity-input" />
           <button (click)="updateCartItem(item.product_id, item.quantity)" class="update-btn">Update</button>
           <button (click)="deleteCartItem(item.id)" class="remove-btn">Remove</button>

@@ -1,13 +1,22 @@
-<div class="product-list">
-  <h2>Welcome to product list</h2>
-  <div class="grid">
-    <div class="card" *ngFor="let product of products">
-      <h3>{{ product.name }}</h3>
-      <p>{{ product.description }}</p>
-      <p>Price: ${{ product.price }}</p>
-      <p>Category: {{ product.category }}</p>
-      <img [src]="product.image_url" [alt]="product.name" />
-      <button (click)="addToCart(product.id)">Add to Cart</button>
+<div class="video-background">
+  <video id="bg-video" autoplay muted loop>
+    <source src="https://videos.pexels.com/video-files/25559415/11902577_640_360_30fps.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="video-overlay"></div>
+  
+  <!-- Product List Section -->
+  <div class="product-list">
+    <h2>Welcome to product list</h2>
+    <div class="grid">
+      <div class="card" *ngFor="let product of products">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p>Price: ${{ product.price }}</p>
+        <p>Category: {{ product.category }}</p>
+        <img [src]="product.image_url" [alt]="product.name" />
+        <button (click)="addToCart(product.id)">Add to Cart</button>
+      </div>
     </div>
   </div>
 </div>

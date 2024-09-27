@@ -1,6 +1,39 @@
+/* Video Background Styles */
+.video-background {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  transform: translate(-50%, -50%);
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent overlay to dim the video */
+  z-index: -1;
+}
+
 /* Product List Styles */
 .product-list {
+  position: relative;
+  z-index: 1;
   padding: 20px;
+  color: white;
+  max-height: calc(100vh - 40px); /* Adjust this based on your layout */
+  overflow-y: auto; /* Allows scrolling when content exceeds max-height */
 }
 
 .product-list h2 {

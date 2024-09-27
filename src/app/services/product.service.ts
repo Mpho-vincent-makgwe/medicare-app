@@ -19,8 +19,8 @@ export class ProductService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  addProduct(product: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, product);
+  addProduct(formData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, formData);
   }
 
   removeProduct(id: number): Observable<any> {

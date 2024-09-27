@@ -1,12 +1,16 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt'); // Add bcrypt for password hashing
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+// Serve static files in the uploads directory
+app.use('/uploads', express.static('uploads'));
 
 // MySQL Connection
 const connection = mysql.createConnection({
@@ -28,6 +32,66 @@ app.get('/api/products', (req, res) => {
         res.send(results);
     });
 });
+
+// Configure Multer for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Ensure this folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Appending the file extension
+  }
+});
+const upload = multer({ storage });
+// Product Route
+app.post('/api/products', upload.single('image'), (req, res) => {
+  try {
+    const { name, price, seller, description } = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : ''; // Store relative URL
+
+    // Insert product into the SQL database
+    const query = 'INSERT INTO products (name, description, price, seller, image_url) VALUES (?, ?, ?, ?, ?)';
+    const values = [name, description, price, seller, imageUrl];
+
+    connection.query(query, values, (error, results) => {
+      if (error) {
+        return res.status(500).json({ message: 'Error adding product', error: error.message });
+      }
+      res.status(201).json({
+        message: 'Product added successfully',
+        product: {
+          id: results.insertId,
+          name,
+          price,
+          seller,
+          description,
+          imageUrl
+        }
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding product', error: error.message });
+  }
+});
+
+// Delete a product from the products table
+app.delete('/api/products/:id', (req, res) => {
+  const productId = req.params.id;
+
+  const deleteQuery = 'DELETE FROM products WHERE id = ?';
+  connection.query(deleteQuery, [productId], (err, result) => {
+      if (err) {
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'Product not found' });
+      }
+
+      res.status(200).json({ message: 'Product deleted successfully' });
+  });
+});
+
 
 // Registration endpoint
 app.post('/api/register', (req, res) => {

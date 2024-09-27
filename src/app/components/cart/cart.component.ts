@@ -33,7 +33,7 @@ export class CartComponent implements OnInit {
     let total = 0;
     this.cartItems$.subscribe(items => {
       items.forEach(item => {
-        total += item.price * item.quantity;
+        total += item.product_price * item.quantity;
       });
     });
     return total.toFixed(2); // Return with 2 decimal places

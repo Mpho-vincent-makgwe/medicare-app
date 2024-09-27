@@ -1,5 +1,50 @@
-<div class="container">
-    <h2>Admin Dashboard</h2>
-    <!-- Add or remove medicines, edit details -->
+<div class="video-background">
+  <video autoplay muted loop id="bg-video">
+    <source src="https://videos.pexels.com/video-files/5355792/5355792-sd_640_360_25fps.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <h2 class="dashboard-title">Admin Dashboard</h2>
+
+    <!-- Add Product Form -->
+    <form class="product-form" (ngSubmit)="addProduct()">
+      <input type="text" [(ngModel)]="newProduct.name" name="name" placeholder="Product Name" required>
+      <input type="number" [(ngModel)]="newProduct.price" name="price" placeholder="Price" required>
+      <input type="text" [(ngModel)]="newProduct.seller" name="seller" placeholder="Seller" required>
+      <textarea [(ngModel)]="newProduct.description" name="description" placeholder="Product Description" required></textarea>
+      <label class="upload-label">Add Image:</label>
+      <input type="file" (change)="onFileSelected($event)" class="file-input" required>
+      <button type="submit" class="submit-btn">Add Product</button>
+    </form>
+
+    <!-- Product List -->
+    <div class="product-list" *ngFor="let product of products">
+      <div class="product-card">
+        <h3>{{ product.name }}</h3>
+        <p>Price: ${{ product.price }}</p>
+        <p>Seller: {{ product.seller }}</p>
+        <p>Description: {{ product.description }}</p>
+        <p>Status: {{ product.enabled ? 'Enabled' : 'Disabled' }}</p>
+        <button (click)="removeProduct(product.id)" class="action-btn remove-btn">Remove</button>
+        <button (click)="editProduct(product)" class="action-btn edit-btn">Edit</button>
+        <button (click)="toggleProductStatus(product)" class="action-btn toggle-btn">
+          {{ product.enabled ? 'Disable' : 'Enable' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Edit Product Form -->
+    <div class="edit-product" *ngIf="editingProduct">
+      <h3>Edit Product</h3>
+      <form (ngSubmit)="updateProduct()">
+        <input type="text" [(ngModel)]="editingProduct.name" name="name" required>
+        <input type="number" [(ngModel)]="editingProduct.price" name="price" required>
+        <input type="text" [(ngModel)]="editingProduct.seller" name="seller" required>
+        <textarea [(ngModel)]="editingProduct.description" name="description" required></textarea>
+        <button type="submit" class="submit-btn">Update Product</button>
+        <button (click)="editingProduct = null" class="cancel-btn">Cancel</button>
+      </form>
+    </div>
   </div>
-  
+</div>
