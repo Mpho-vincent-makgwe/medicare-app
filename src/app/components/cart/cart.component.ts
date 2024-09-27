@@ -23,8 +23,21 @@ export class CartComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   hasCartItems: boolean = false;
+  totalPrice: number = 0;
+
 
   constructor(private cartService: CartService, private router: Router) {}
+
+  // Method to calculate the total price of the cart
+  calculateTotalPrice() {
+    let total = 0;
+    this.cartItems$.subscribe(items => {
+      items.forEach(item => {
+        total += item.price * item.quantity;
+      });
+    });
+    return total.toFixed(2); // Return with 2 decimal places
+  }
 
   ngOnInit(): void {
     this.getCartItems();

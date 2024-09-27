@@ -5,8 +5,6 @@
   </video>
 
   <div class="container">
-      <h2>Checkout</h2>
-
       <!-- Loading and Error Handling -->
       <div *ngIf="loading">
         <p>Loading cart items...</p>
@@ -19,12 +17,18 @@
       <div *ngIf="!loading && hasCartItems && !error">
         <h3>Your Cart</h3>
         <div class="cart-item" *ngFor="let item of (cartItems$ | async)">
-          <p>{{ item.name }}</p>
-          <p>Price: ${{ item.price }}</p>
+          <p>Product: {{ item.product_name }}</p>
+          <p>Price: ${{ item.product_price }}</p>
+          <p>Subtotal: ${{ item.price * item.quantity }}</p>
           <input type="number" [(ngModel)]="item.quantity" min="1" class="quantity-input" />
           <button (click)="updateCartItem(item.product_id, item.quantity)" class="update-btn">Update</button>
           <button (click)="deleteCartItem(item.id)" class="remove-btn">Remove</button>
         </div>
+
+        <div class="total">
+          <h4>Total Price: ${{ calculateTotalPrice() }}</h4>
+        </div>
+
         <button (click)="goToCheckout()" class="checkout-btn">Proceed to Checkout</button>
       </div>
 

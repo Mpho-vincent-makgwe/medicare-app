@@ -28,7 +28,9 @@
 
           <label for="cvv">CVV</label>
           <input type="text" id="cvv" [(ngModel)]="paymentDetails.cvv" name="cvv" required>
-
+          <div class="total-checkout">
+            <h4>Total Price: ${{ calculateTotalPrice() }}</h4>
+          </div>
           <button type="submit">Checkout</button>
       </form>
   </div>

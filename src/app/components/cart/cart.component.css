@@ -1,14 +1,9 @@
-/* General Styles */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-}
-
+/* Cart Styles */
 .video-background {
   position: relative;
-  height: 100vh;
-  overflow: hidden;
+  /* min-height: 100vh;  */
+   /* Use min-height to allow expansion if content grows */
+  overflow: hidden;   /* Keep overflow hidden for background video */
 }
 
 #bg-video {
@@ -23,18 +18,17 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* Container for Cart and Checkout */
+/* Container for Cart */
 .container {
-  position: relative;
-  z-index: 1;
-  max-width: 500px;
+  max-width: 100%;
   margin: auto;
   background-color: rgba(0, 0, 128, 0.7);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   color: white;
-  text-align: center;
+  max-height: 100%; /* Limit the height of the container */
+  overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 .container h2 {
@@ -132,4 +126,19 @@ body {
 
 .checkout-btn:hover {
   background-color: darkgreen;
+}
+
+/* Price display styling */
+.total, .total-checkout {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.total h4, .total-checkout h4 {
+  padding: 10px;
+  background-color: rgba(0, 0, 128, 0.7);
+  border-radius: 5px;
+  text-align: center;
 }
