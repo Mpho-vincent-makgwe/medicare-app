@@ -21,11 +21,15 @@ interface Order {
   providedIn: 'root',
 })
 export class CheckoutService {
-
+  private orderDetails: Order | undefined;
+  
   constructor(private http: HttpClient) {}
 
-  submitOrder(order: Order): Observable<any> {
-    return this.http.post('/api/orders', order); // Adjust your API endpoint here
+  setOrderDetails(order: Order) {
+    this.orderDetails = order;
   }
-  
+
+  getOrderDetails(): Order | undefined {
+    return this.orderDetails;
+  }
 }

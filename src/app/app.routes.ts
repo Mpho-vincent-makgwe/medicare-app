@@ -11,6 +11,7 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { CheckoutSummaryComponent } from './components/checkout-summary/checkout-summary.component';
 // import { NavbarComponent } from './components/navbar/navbar.component';
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent },
   { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'checkout-summary', component: CheckoutSummaryComponent },
 ];
 
 @NgModule({

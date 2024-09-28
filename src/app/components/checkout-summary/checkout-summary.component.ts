@@ -1,5 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+interface Order {
+  shipping: {
+    fullName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+  };
+  payment: {
+    cardNumber: string;
+    expiryDate: string;
+    cvv: string;
+  };
+  items: OrderItem[];
+}
 
 @Component({
   selector: 'app-checkout-summary',
@@ -8,15 +29,24 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './checkout-summary.component.html',
   styleUrls: ['./checkout-summary.component.css']
 })
-export class CheckoutSummaryComponent implements OnInit {
-  orderDetails: any; // Define the type as needed
+export class CheckoutSummaryComponent {
+  order: Order | undefined; // Store the order details
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private router: Router) {
+    // Retrieve order details passed from the previous component
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      this.order = navigation.extras.state['order'];
+    }
+  }
 
-  ngOnInit() {
-    // Retrieve order details, you can use route parameters or a shared service
-    this.route.data.subscribe(data => {
-      this.orderDetails = data['order']; // Assuming order details are passed
-    });
+  calculateTotalPrice(): string {
+    let total = 0;
+    if (this.order?.items) {
+      this.order.items.forEach(item => {
+        total += item.price * item.quantity;
+      });
+    }
+    return total.toFixed(2);
   }
 }

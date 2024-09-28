@@ -285,30 +285,6 @@ app.delete('/api/cart/item/:cartItemId', (req, res) => {
 });
 
 
-// Fetch a single cart item by ID (for detailed info)
-// app.get('/api/cart/item/:id', (req, res) => {
-//   const itemId = req.params.id;
-//   const query = `
-//     SELECT cart.id AS cartItemId, cart.product_id, cart.quantity,
-//            products.name, products.price
-//     FROM cart
-//     JOIN products ON cart.product_id = products.id
-//     WHERE cart.id = ?`;
-
-//   db.query(query, [itemId], (err, results) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Internal Server Error' });
-//     }
-
-//     if (results.length === 0) {
-//       return res.status(404).json({ error: 'Item not found' });
-//     }
-
-//     // Return detailed information of the specific item
-//     res.status(200).json(results[0]);
-//   });
-// });
-
 
 // Start server
 const PORT = 3000;

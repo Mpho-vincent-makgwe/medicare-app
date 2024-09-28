@@ -4,7 +4,13 @@ import { CartService } from '../../services/cart-service.service';
 import { CheckoutService } from '../../services/checkout.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
+
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 interface Order {
   shipping: {
@@ -18,7 +24,7 @@ interface Order {
     expiryDate: string;
     cvv: string;
   };
-  items: any[];
+  items: OrderItem[];
 }
 
 @Component({
@@ -28,12 +34,9 @@ interface Order {
     FormsModule
   ],
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css'] // Fixed typo from styleUrl to styleUrls
+  styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent {
-  totalPrice: number = 0;
-  cartItems$: Observable<any[]> | undefined;
-
   checkoutDetails = {
     fullName: '',
     address: '',
@@ -51,46 +54,38 @@ export class CheckoutComponent {
     private cartService: CartService,
     private checkoutService: CheckoutService,
     private http: HttpClient,
-    private router: Router // Inject Router
+    private router: Router
   ) {}
 
   onCheckout() {
     const order: Order = {
       shipping: this.checkoutDetails,
       payment: this.paymentDetails,
-      items: [] // Populate with cart items
+      items: []
     };
 
     // Fetch cart items from the service
     this.cartService.getCartItems().subscribe(cartItems => {
       order.items = cartItems; // Assign cart items to the order
 
-      // Use the CheckoutService to submit the order
-      this.checkoutService.submitOrder(order).subscribe(
-        response => {
-          console.log('Order submitted successfully:', response);
-          // Navigate to checkout summary page on success
-          this.router.navigate(['/checkout-summary']);
-        },
-        error => {
-          console.error('Error submitting order:', error);
-          // Handle error response
-        }
-      );
+      // Save order details using the CheckoutService (if needed)
+      this.checkoutService.setOrderDetails(order);
+
+      // Directly navigate to the summary component with order details
+      this.router.navigate(['/checkout-summary'], { state: { order: order } });
     });
   }
 
-  calculateTotalPrice() {
+  calculateTotalPrice(): string {
     let total = 0;
 
-    if (this.cartItems$) {
-      this.cartItems$.subscribe(items => {
-        items.forEach(item => {
-          total += item.price * item.quantity;
-        });
+    // Fetch cart items to calculate the total price
+    this.cartService.getCartItems().subscribe(items => {
+      items.forEach(item => {
+        total += item.price * item.quantity;
       });
-    }
+    });
 
-    return total.toFixed(2); // Return with 2 decimal places
+    return total.toFixed(2); // Return total with 2 decimal places
   }
 }

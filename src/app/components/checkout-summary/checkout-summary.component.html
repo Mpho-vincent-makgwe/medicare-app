@@ -1,19 +1,19 @@
 <div>
   <h2>Order Summary</h2>
   <h3>Shipping Details</h3>
-  <p>Full Name: {{ orderDetails?.shipping.fullName }}</p>
-  <p>Address: {{ orderDetails?.shipping.address }}</p>
-  <p>City: {{ orderDetails?.shipping.city }}</p>
-  <p>Postal Code: {{ orderDetails?.shipping.postalCode }}</p>
+  <p>Full Name: {{ order?.shipping.fullName }}</p>
+  <p>Address: {{ order?.shipping.address }}</p>
+  <p>City: {{ order?.shipping.city }}</p>
+  <p>Postal Code: {{ order?.shipping.postalCode }}</p>
 
   <h3>Payment Details</h3>
-  <p>Card Number: {{ orderDetails?.payment.cardNumber }}</p>
-  <p>Expiry Date: {{ orderDetails?.payment.expiryDate }}</p>
-  <p>CVV: {{ orderDetails?.payment.cvv }}</p>
+  <p>Card Number: {{ order?.payment.cardNumber }}</p>
+  <p>Expiry Date: {{ order?.payment.expiryDate }}</p>
+  <p>CVV: {{ order?.payment.cvv }}</p>
 
   <h3>Items</h3>
   <ul>
-    <li *ngFor="let item of orderDetails?.items">
+    <li *ngFor="let item of order?.items">
       {{ item.name }} - ${{ item.price }} (Quantity: {{ item.quantity }})
     </li>
   </ul>
