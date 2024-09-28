@@ -1,0 +1,20 @@
+<div class="product-data-container">
+  <h2>Product Management</h2>
+
+  <!-- Search Input -->
+  <input type="text" placeholder="Search products..." [(ngModel)]="search" (input)="applySearch($event)" />
+
+  <!-- Dropdown for sorting options -->
+  <select (change)="applySort($event)">
+    <option value="">Sort by</option>
+    <option value="name_asc">A-Z</option>
+    <option value="name_desc">Z-A</option>
+    <option value="price_asc">Price: Low to High</option>
+    <option value="price_desc">Price: High to Low</option>
+    <option value="date_asc">Oldest First</option>
+    <option value="date_desc">Newest First</option>
+  </select>
+
+  <!-- Button to clear all filters and sort -->
+  <button (click)="clearFilters()">Clear</button>
+</div>

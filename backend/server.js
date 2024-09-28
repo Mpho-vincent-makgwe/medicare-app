@@ -25,13 +25,66 @@ connection.connect(err => {
     console.log('Connected to MySQL Database');
 });
 
-// Fetch products from MySQL
+
+// Fetch products from MySQL with optional filter, sort, and search functionality
 app.get('/api/products', (req, res) => {
-    connection.query('SELECT * FROM products', (error, results) => {
-        if (error) throw error;
-        res.send(results);
-    });
+  let query = 'SELECT * FROM products';
+  let conditions = [];
+
+  // Handle filtering by category
+  if (req.query.filter === 'category' && req.query.category) {
+    conditions.push(`category = ?`);
+  }
+
+  // Handle searching by product name
+  if (req.query.search) {
+    conditions.push(`name LIKE ?`);
+  }
+
+  // Append conditions to the query if there are any
+  if (conditions.length > 0) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  // Handle sorting options
+  if (req.query.sort) {
+    switch (req.query.sort) {
+      case 'name_asc':
+        query += ' ORDER BY name ASC';
+        break;
+      case 'name_desc':
+        query += ' ORDER BY name DESC';
+        break;
+      case 'price_asc':
+        query += ' ORDER BY price ASC';
+        break;
+      case 'price_desc':
+        query += ' ORDER BY price DESC';
+        break;
+      case 'date_asc':
+        query += ' ORDER BY created_at ASC';
+        break;
+      case 'date_desc':
+        query += ' ORDER BY created_at DESC';
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Execute the query with sanitized inputs
+  connection.query(query, [req.query.category ? req.query.category : '%'+req.query.search+'%'], (error, results) => {
+    if (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).send('Error fetching products');
+    } else {
+      res.send(results);
+    }
+  });
 });
+
+
+
 
 // Configure Multer for image uploads
 const storage = multer.diskStorage({

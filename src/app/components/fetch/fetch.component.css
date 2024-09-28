@@ -1,0 +1,55 @@
+.product-data-container {
+  background-color: rgba(255, 255, 255, 0.8); /* Light transparent background */
+  padding: 20px;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  display: flex;
+  flex-direction: column; /* Align items vertically */
+  gap: 10px; /* Space between elements */
+  max-width: 600px; /* Limit width for better appearance */
+  margin: 20px auto; /* Center align */
+}
+
+/* Styling for the search input */
+.product-data-container input[type="text"] {
+  padding: 10px;
+  border: 2px solid #007BFF; /* Blue border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Font size */
+  transition: border-color 0.3s; /* Transition for border color */
+}
+
+.product-data-container input[type="text"]:focus {
+  outline: none; /* Remove default outline */
+  border-color: #0056b3; /* Darker blue when focused */
+}
+
+/* Styling for the dropdown */
+.product-data-container select {
+  padding: 10px;
+  border: 2px solid #007BFF; /* Blue border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Font size */
+  background-color: white; /* White background */
+  transition: border-color 0.3s; /* Transition for border color */
+}
+
+.product-data-container select:hover {
+  border-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Styling for the clear button */
+.product-data-container button {
+  background-color: #007BFF; /* Blue background */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  padding: 10px;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  transition: background 0.3s; /* Transition for background color */
+}
+
+.product-data-container button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

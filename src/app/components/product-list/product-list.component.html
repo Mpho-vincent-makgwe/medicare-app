@@ -8,14 +8,15 @@
   <!-- Product List Section -->
   <div class="product-list">
     <h2>Welcome to product list</h2>
+    <app-fetch (productsFetched)="onProductsFetched($event)"></app-fetch>
     <div class="grid">
       <div class="card" *ngFor="let product of products">
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>Price: ${{ product.price }}</p>
-        <p>Category: {{ product.category }}</p>
-        <img [src]="product.image_url" [alt]="product.name" />
-        <button (click)="addToCart(product.id)">Add to Cart</button>
+        <h3>{{ product?.name }}</h3>
+        <p>{{ product?.description }}</p>
+        <p>Price: ${{ product?.price }}</p>
+        <p>Category: {{ product?.category }}</p>
+        <img [src]="product?.image_url" [alt]="product?.name" />
+        <button (click)="addToCart(product?.id)">Add to Cart</button>
       </div>
     </div>
   </div>
