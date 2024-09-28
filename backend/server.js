@@ -204,38 +204,45 @@ app.get('/api/cart', (req, res) => {
 
 // Add an item to the cart
 app.post('/api/cart', (req, res) => {
+  console.log('Request received to add to cart:', req.body); // Log the request body
+
   const { productId, quantity } = req.body;
   const defaultUserId = 1; // Simulated or default user for educational purposes
 
   const fetchProductSql = 'SELECT * FROM products WHERE id = ?';
   connection.query(fetchProductSql, [productId], (err, productResults) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (productResults.length === 0) return res.status(404).json({ error: 'Product not found' });
+    if (err) {
+      console.error('Error fetching product:', err); // Log the error
+      return res.status(500).json({ error: err.message });
+    }
+    if (productResults.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     const product = productResults[0];
 
     const checkCartSql = 'SELECT * FROM cart WHERE user_id = ? AND product_id = ?';
     connection.query(checkCartSql, [defaultUserId, productId], (checkErr, checkResults) => {
-      if (checkErr) return res.status(500).json({ error: checkErr.message });
+      if (checkErr) {
+        console.error('Error checking cart:', checkErr); // Log the error
+        return res.status(501).json({ error: checkErr.message });
+      }
 
       if (checkResults.length > 0) {
         // Update quantity if item already exists in cart
         const existingItem = checkResults[0];
-        const updateSql = `
-          UPDATE cart
-          SET quantity = quantity + ?
-          WHERE id = ?`;
+        const updateSql = `UPDATE cart SET quantity = quantity + ? WHERE id = ?`;
 
         connection.query(updateSql, [quantity, existingItem.id], (updateErr) => {
-          if (updateErr) return res.status(500).json({ error: updateErr.message });
+          if (updateErr) {
+            console.error('Error updating cart quantity:', updateErr); // Log the error
+            return res.status(502).json({ error: updateErr.message });
+          }
           return res.status(200).json({ message: 'Item quantity updated in cart' });
         });
       } else {
         // Insert new item into cart
-        const insertSql = `
-          INSERT INTO cart
-          (user_id, product_id, quantity, product_name, product_description, product_price, product_category, product_image_url)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        const insertSql = `INSERT INTO cart (user_id, product_id, quantity, product_name, product_description, product_price, product_category, product_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
         connection.query(insertSql, [
           defaultUserId,
@@ -247,7 +254,10 @@ app.post('/api/cart', (req, res) => {
           product.category,
           product.image_url
         ], (insertErr) => {
-          if (insertErr) return res.status(500).json({ error: insertErr.message });
+          if (insertErr) {
+            console.error('Error inserting into cart:', insertErr); // Log the error
+            return res.status(503).json({ error: insertErr.message });
+          }
           res.status(201).json({ message: 'Item added to cart for default user' });
         });
       }

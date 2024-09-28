@@ -18,17 +18,11 @@ export class ProductListComponent  {
 
   constructor(private productService: ProductService) {}
 
-  // ngOnInit(): void {
-  //   this.productService.getProducts().subscribe((data: any[]) => {
-  //     this.products = data;
-  //   });
-  // }
-
-// Method to handle adding product to the cart
-// Method to handle adding product to the cart with user-defined quantity
 onProductsFetched(products: any[]): void {
   this.products = products;
 }
+
+
 addToCart(productId: number) {
   const quantity = 1; // Default quantity; you can modify this logic as needed
   this.productService.addToCart(productId, quantity).subscribe(
@@ -42,6 +36,7 @@ addToCart(productId: number) {
     }
   );
 }
+
 
 
 }

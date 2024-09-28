@@ -48,9 +48,10 @@
 }
 
 .card {
-  background-color: rgba(0, 0, 128, 0.7); /* Semi-transparent navy for card */
+  background-color: rgba(0, 74, 106, 0.539); /* Semi-transparent navy for card */
   border-radius: 10px;
   padding: 15px;
+  color: rgb(226, 174, 250);
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
 }
