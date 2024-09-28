@@ -1,0 +1,24 @@
+<div>
+  <h2>Order Summary</h2>
+  <h3>Shipping Details</h3>
+  <p>Full Name: {{ orderDetails?.shipping.fullName }}</p>
+  <p>Address: {{ orderDetails?.shipping.address }}</p>
+  <p>City: {{ orderDetails?.shipping.city }}</p>
+  <p>Postal Code: {{ orderDetails?.shipping.postalCode }}</p>
+
+  <h3>Payment Details</h3>
+  <p>Card Number: {{ orderDetails?.payment.cardNumber }}</p>
+  <p>Expiry Date: {{ orderDetails?.payment.expiryDate }}</p>
+  <p>CVV: {{ orderDetails?.payment.cvv }}</p>
+
+  <h3>Items</h3>
+  <ul>
+    <li *ngFor="let item of orderDetails?.items">
+      {{ item.name }} - ${{ item.price }} (Quantity: {{ item.quantity }})
+    </li>
+  </ul>
+
+  <div class="total-price">
+    <h4>Total Price: ${{ calculateTotalPrice() }}</h4>
+  </div>
+</div>

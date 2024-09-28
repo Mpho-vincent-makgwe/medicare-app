@@ -27,4 +27,5 @@ export class CheckoutService {
   submitOrder(order: Order): Observable<any> {
     return this.http.post('/api/orders', order); // Adjust your API endpoint here
   }
+  
 }
